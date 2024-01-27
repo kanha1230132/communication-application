@@ -1,0 +1,18 @@
+/* ------styles here welcome screen  */
+
+.welcome-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.outline-button {
+    text-decoration: none;
+    color: 'black'
+}
+
+.register-button {
+    margin-top: 10px;
+}
