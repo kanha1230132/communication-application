@@ -1,6 +1,7 @@
 import React from "react";
 import "./index.css";
 import { Link } from "react-router-dom";
+import { PathName } from "../../helper/constants/pathNames.ts";
 function Welcome() {
   return (
     <div className="welcome-container">
@@ -9,13 +10,13 @@ function Welcome() {
       <p>Existing Users</p>
 
       {/* Login Button */}
-        <Link className="outline-button text-center" to={"/login"}>Login</Link>{" "}
+        <Link className="outline-button text-center" to={PathName.loginPath}>Login</Link>{" "}
       <br />
 
       <p>New Users</p>
 
       {/* Register Button */}
-        <Link className="outline-button text-center" to={"/registration"}>Register</Link>{" "}
+        <Link className="outline-button text-center" to={PathName.registerPath}>Register</Link>{" "}
     </div>
   );
 }
