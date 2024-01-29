@@ -1,5 +1,6 @@
 import React from "react";
 import "./index.css";
+import { PathName } from "../../helper/constants/pathNames.ts";
 
 function Register() {
   return (
@@ -39,7 +40,7 @@ function Register() {
             <input type="password" class="form-control" id="inputPassword3" />
           </div>
         </div>
-        <a href="/registrationSuccessfully" class="btn btn-primary align-middle">
+        <a href={PathName.registerSuccessPath} class="btn btn-primary align-middle">
           Register
         </a>
       </form>
