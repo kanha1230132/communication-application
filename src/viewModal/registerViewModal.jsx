@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { PASSWORD_REGEX } from '../helper/constants/constant.ts';
-
+import { useLogin } from '../context/login.context.jsx';
+import { POST, getHeaders } from '../api/restClient.ts';
+import URL from '../api/url.ts'
+import { PathName } from '../helper/constants/pathNames.ts';
 function RegisterViewModal() {
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    "firstName": "",
+  "lastName": "",
+  "email": "",
+  "password": "",
+  "passwordConfirm": "",
   });
   const [showToast, setShowToast] = useState(false);
   const [showToastMessage, setshowToastMessage] = useState('');
-
+  const loginStore = useLogin();
    /** Function to handle form field changes */
    const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,14 +22,34 @@ function RegisterViewModal() {
   };
 
   /** Click on Register button to registration */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(!validatePassword(formData.password, formData.confirmPassword)){
-      setTimeout(() => {
-        setShowToast(false);
-      }, 700);
-      return;
-    }
+    navigate(PathName.registerSuccessPath)
+    console.log("----12222111111")
+
+    // if(!validatePassword(formData.password, formData.passwordConfirm)){
+    //   setTimeout(() => {
+    //     setShowToast(false);
+    //   }, 700);
+    //   return;
+    // }
+    // console.log("----1111111111")
+    // try {
+    //   const response = await POST(URL.Register,getHeaders(null),formData);
+    //   console.log("response --->", JSON.stringify(response));
+    //   if(response.statusCode==200){
+    //     const output = response?.data
+    //     if(output){
+    //       loginStore.setToken(output?.token);
+    //       loginStore.login(output.userData);
+    //       // redirect(PathName.registerSuccessPath)
+    //       // Navigate(PathName.registerSuccessPath)
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log("Error ----> ", error)
+    // }
+
   };
 
   /** check valid Password 

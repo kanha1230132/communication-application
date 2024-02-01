@@ -10,7 +10,6 @@ function Register() {
     showToast,
     showToastMessage,
   } = RegisterViewModal();
-
   return (
     <div className="login-container">
       <h1>Register </h1>
@@ -25,8 +24,23 @@ function Register() {
               type="text"
               className="form-control"
               id="inputEmail13"
-              name="fullName"
-              value={formData.fullName}
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
+            />
+          </div>
+        </div>
+        <div className="row mb-3">
+          <label htmlFor="inputEmail113" className="col-sm-10 col-form-label">
+            Full Name
+          </label>
+          <div className="col-sm-10">
+            <input
+              type="text"
+              className="form-control"
+              id="inputEmail113"
+              name="lastName"
+              value={formData.lastName}
               onChange={handleInputChange}
             />
           </div>
@@ -70,8 +84,8 @@ function Register() {
               type="password"
               className="form-control"
               id="inputPassword43"
-              name="confirmPassword"
-              value={formData.confirmPassword}
+              name="passwordConfirm"
+              value={formData.passwordConfirm}
               onChange={handleInputChange}
             />
           </div>

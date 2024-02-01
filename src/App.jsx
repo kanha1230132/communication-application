@@ -8,18 +8,20 @@ import Logout from "./pages/logout";
 import LoginSuccessFully from "./pages/loginSuccessFully";
 import EditList from "./pages/editUser";
 import Welcome from "./pages/welcome";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import NotFound from "./pages/notFound";
 import Navbar from "./navigation/navbar";
 import { PathName } from "./helper/constants/pathNames.ts";
 import './theme/style.css'
+import { useEffect, useState } from "react";
 function App() {
+  
   return (
     <BrowserRouter>
       <Routes>
         <Route index path={PathName.homePath} element={<Welcome />} />
         <Route path={PathName.loginPath} element={<Login />} />
-        <Route path={PathName.registerPath} element={<Register />} />
+        <Route path={PathName.registerPath} element={<Register  />} />
         <Route
           path={PathName.registerSuccessPath}
           element={<RegisterSuccessFully />}
