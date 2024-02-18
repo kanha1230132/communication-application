@@ -1,32 +1,23 @@
 import React from "react";
-
+import "./index.css";
 const ChatMessage = ({ message, isMine, time, senderName, senderImage }) => {
   return (
     <div
-      className={`d-flex ${
-        isMine ? "justify-content-end" : "justify-content-start"
-      } mb-2 mt-2`}
+      className={` p-0 d-flex  ${
+        isMine ? "justify-content-end  " : "justify-content-start"
+      }`}
     >
       <div
-        className={`p-2 d-flex ${
-          isMine ? "bg-primary text-white" : "bg-light"
+        className={` m-2 rounded shadow ${
+          isMine ? "mine-message-bg text-white" : " sender-message-bg text-dark"
         }`}
-        style={{ borderRadius: "10px" }}
       >
-        {senderImage && (
-          <img
-            src={senderImage}
-            alt="Sender"
-            className="rounded-circle mr-2"
-            style={{ width: "30px", height: "30px",marginRight:10 }}
-          />
-        )}
-        <div className="ml-5">
-          <p className="mb-0">{message}</p>
-
-          <small className="text-muted mt-1">
-            {senderName && <strong>{senderName}</strong>} {time}
-          </small>
+        <p style={{ fontSize: 10 }}>
+          {!isMine && senderName && <strong>{senderName}</strong>}
+        </p>
+        <p style={{ fontSize: 11 }}>{message}</p>
+        <div>
+          <p style={{ fontSize: 10 }}>{time}</p>
         </div>
       </div>
     </div>

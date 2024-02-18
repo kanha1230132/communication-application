@@ -27,3 +27,11 @@
     display: inline;
     justify-content: space-between;
   }
+
+  .h-40px{
+    height: 40px;
+  }
+
+  .p-title{
+    font-size: 20px;
+  }

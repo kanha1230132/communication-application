@@ -1,31 +1,85 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.css";
+import { FloatingLabel, Form, Button } from "react-bootstrap";
+import {
+  getDataToLocalStorage,
+  saveDataToLocalStorage,
+} from "../../helper/localStorage/index.ts";
+import { localKey } from "../../helper/constants/localStorageKey.ts";
+import { useNavigate } from "react-router-dom";
+import { PathName } from "../../helper/constants/pathNames.ts";
 
 function Login() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+
+  // Function to call handle change values
+  const onChangeHandle = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  // Function to call login user
+  const onHandleSignIn = (e) => {
+    e.preventDefault();
+    const users = getDataToLocalStorage(localKey.USERS);
+    if (users.length > 0) {
+      const loggedUser = users.filter((item) => item.email === user.email);
+      if (loggedUser.length > 0) {
+        if (loggedUser[0].password === user.password) {
+          saveDataToLocalStorage(localKey.LOGGED_IN_USER, loggedUser[0]);
+          setTimeout(() => {
+          navigate(PathName.chatListPath);
+          },1000);
+        } else {
+          alert("Password not matched!");
+        }
+      } else {
+        alert("Users Not Exists !");
+      }
+    } else {
+      alert("Users Not Exists !");
+    }
+  };
+
   return (
     <div className="login-container">
-      <h2>Login</h2>
-
-      <form>
-        <div className="row mb-3">
-          <label for="inputEmail3" className="col-sm-3 col-form-label">
-            Email
-          </label>
-          <div className="col-sm-10">
-            <input type="email" className="form-control" id="inputEmail3" />
-          </div>
-        </div>
-        <div className="row mb-3">
-          <label for="inputPassword3" className="col-sm-3 col-form-label">
-            Password
-          </label>
-          <div className="col-sm-10">
-            <input type="password" className="form-control" id="inputPassword3" />
-          </div>
-        </div>
-        <a href="/loginSuccessfully" className="btn btn-primary align-middle">
-          Sign in
-        </a>
+      <p className="p-title">Login</p>
+      <form onSubmit={onHandleSignIn}>
+        <FloatingLabel
+          controlId="floatingPassword"
+          label="Email"
+          className="mt-2"
+        >
+          <Form.Control
+            type="email"
+            placeholder="Email"
+            name="email"
+            value={user.email}
+            onChange={onChangeHandle}
+            required
+          />
+        </FloatingLabel>
+        <FloatingLabel
+          controlId="floatingPassword"
+          label="Password"
+          className="mt-2"
+        >
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={user.password}
+            onChange={onChangeHandle}
+            required
+          />
+        </FloatingLabel>
+        <Button type="submit" variant="secondary" className="w-100 mt-2">
+          Sign In
+        </Button>
       </form>
     </div>
   );

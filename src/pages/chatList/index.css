@@ -1,0 +1,14 @@
+/* Hide scrollbar for all containers */
+::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Optional: For Firefox */
+  * {
+    scrollbar-width: none;
+  }
+  
+  /* Optional: For Edge and IE */
+  * {
+    -ms-overflow-style: none;
+  }

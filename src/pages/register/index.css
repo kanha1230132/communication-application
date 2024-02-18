@@ -5,3 +5,12 @@
     justify-content: center;
     height: 100vh;
 }
+.error{
+    color: red;
+    margin-left: 10px;
+}
+
+p{
+    margin:0;
+    padding: 0;
+}

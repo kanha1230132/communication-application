@@ -1,0 +1,12 @@
+.mine-message-bg{
+    background-color:rgba(133, 180, 177, 1);
+    padding: 5px 10px ;
+}
+.sender-message-bg{
+    background-color: beige;
+    padding: 5px 10px ;
+}
+p{
+    margin: 0;
+    padding: 0;
+}
