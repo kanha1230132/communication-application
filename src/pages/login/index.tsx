@@ -1,39 +1,45 @@
 import React, { useState } from "react";
 import "./style.css";
-import { FloatingLabel, Form, Button } from "react-bootstrap";
-import {
-  getDataToLocalStorage,
-  saveDataToLocalStorage,
-} from "../../helper/localStorage/index.ts";
-import { localKey } from "../../helper/constants/localStorageKey.ts";
-import { useNavigate } from "react-router-dom";
-import { PathName } from "../../helper/constants/pathNames.ts";
-
-function Login() {
+import AllFilesImporter from "../../hooks/customFileHooks/index.tsx";
+import { IUsers } from "../../interface/index.ts";
+const Login = () => {
+  // Custom hooks for All files importers
+  const {
+    PathName,
+    localKey,
+    getDataToLocalStorage,
+    saveDataToLocalStorage,
+    useNavigate,
+    FloatingLabel,
+    Form,
+    Button,
+    Link,
+    Loader
+  } = AllFilesImporter();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Function to call handle change values
-  const onChangeHandle = (e) => {
+  const onChangeHandle = (e: any) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
   // Function to call login user
-  const onHandleSignIn = (e) => {
+  const onHandleSignIn = (e: any) => {
     e.preventDefault();
-    const users = getDataToLocalStorage(localKey.USERS);
+    const users: IUsers[] = getDataToLocalStorage(localKey.USERS);
     if (users.length > 0) {
       const loggedUser = users.filter((item) => item.email === user.email);
       if (loggedUser.length > 0) {
         if (loggedUser[0].password === user.password) {
+          setIsLoading(true);
           saveDataToLocalStorage(localKey.LOGGED_IN_USER, loggedUser[0]);
-          setTimeout(() => {
-          navigate(PathName.chatListPath);
-          },1000);
+          navigateToHome();
         } else {
           alert("Password not matched!");
         }
@@ -44,6 +50,14 @@ function Login() {
       alert("Users Not Exists !");
     }
   };
+
+  // Function to navigate home page
+  const navigateToHome = () =>{
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate(PathName.chatListPath);
+    }, 1000);
+  }
 
   return (
     <div className="login-container">
@@ -77,12 +91,15 @@ function Login() {
             required
           />
         </FloatingLabel>
+        <p className="m-2">Don't Have an Account ? <Link to={PathName.registerPath}>Register</Link> </p>
         <Button type="submit" variant="secondary" className="w-100 mt-2">
           Sign In
         </Button>
       </form>
+
+      <Loader isLoading={isLoading} />
     </div>
   );
-}
+};
 
 export default Login;

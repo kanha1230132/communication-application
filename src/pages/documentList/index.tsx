@@ -1,27 +1,32 @@
 import React, { useEffect, useState } from "react";
-import MyModal from "../../components/Modal/modal";
-import { FloatingLabel, Form } from "react-bootstrap";
-import {
-  getDataToLocalStorage,
-  saveDataToLocalStorage,
-} from "../../helper/localStorage/index.ts";
-import { localKey } from "../../helper/constants/localStorageKey.ts";
-import { useNavigate } from "react-router-dom";
-import { PathName } from "../../helper/constants/pathNames.ts";
+import AllFilesImporter from "../../hooks/customFileHooks/index.tsx";
+import { IShareDocuments, IUploads, IUsers } from "../../interface/index.ts";
 
 function DocumentList() {
-  const [documentList, setDocumentList] = useState([]);
-  const [sharedDocumentList, setsharedDocumentList] = useState([]);
-  const [uploadDocumentModal, setuploadDocumentModal] = useState(false);
-  const [userUploadFile, setuserUploadFile] = useState({
+  const {
+    PathName,
+    localKey,
+    saveDataToLocalStorage,
+    getDataToLocalStorage,
+    useNavigate,
+    FloatingLabel,
+    Form,
+    MyModal,
+  } = AllFilesImporter();
+  const [documentList, setDocumentList] = useState<IUploads[]>();
+  const [sharedDocumentList, setSharedDocumentList] =
+    useState<IShareDocuments[]>();
+  const [uploadDocumentModal, setUploadDocumentModal] =
+    useState<boolean>(false);
+  const [userUploadFile, setUserUploadFile] = useState<IUploads>({
     id: 1,
     filename: "",
     label: "",
     uploadBy: "",
   });
-  const [openDeleteModel, setOpenDeleteModel] = useState(false);
-  const [selectedFile, setselectedFile] = useState();
-  const [OpenEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModel, setOpenDeleteModel] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<IUploads>();
+  const [OpenEditModal, setOpenEditModal] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,8 +36,8 @@ function DocumentList() {
 
   // Function to fetch Upload files
   const fetchUploadFiles = () => {
-    const loginUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
-    const uploadFiles = getDataToLocalStorage(localKey.UPLOADS);
+    const loginUser: IUsers = getDataToLocalStorage(localKey.LOGGED_IN_USER);
+    const uploadFiles: IUploads[] = getDataToLocalStorage(localKey.UPLOADS);
     const filterUploadFiles = uploadFiles.filter(
       (item) => loginUser.email === item.uploadBy
     );
@@ -41,24 +46,25 @@ function DocumentList() {
 
   // Function to fetch Shared Upload files
   const fetchSharedDocument = () => {
-    const sharedDocuments = getDataToLocalStorage(localKey.SHARED_DOCUMENT);
-    const loginUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
-    console.log("loginUser------->", loginUser);
+    const sharedDocuments: IShareDocuments[] = getDataToLocalStorage(
+      localKey.SHARED_DOCUMENT
+    );
+    const loginUser: IUsers = getDataToLocalStorage(localKey.LOGGED_IN_USER);
     let filterDoc = sharedDocuments.filter(
       (item) => item.reciveEmail === loginUser.email
     );
-    setsharedDocumentList(filterDoc);
+    setSharedDocumentList(filterDoc);
   };
 
   // Function to handle changes of upload files
-  const onChangeHandle = (e) => {
+  const onChangeHandle = (e: any) => {
     const { name, value } = e.target;
-    setuserUploadFile({ ...userUploadFile, [name]: value });
+    setUserUploadFile({ ...userUploadFile, [name]: value });
   };
 
   // Function to Upload files
   const callToUploadUserFile = () => {
-    setuploadDocumentModal(false);
+    setUploadDocumentModal(false);
     const loginUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
     let fileUploads = { ...userUploadFile };
     fileUploads.uploadBy = loginUser.email;
@@ -69,43 +75,48 @@ function DocumentList() {
       saveDataToLocalStorage(localKey.UPLOADS, [...localuploads, fileUploads]);
     }
     fetchUploadFiles();
-    setuserUploadFile({
+    setUserUploadFile({
       id: 1,
       filename: "",
       label: "",
+      uploadBy: "",
     });
   };
 
   // Function to delete files
   const callToDeleteFile = () => {
-    const document = [...documentList];
-    let filterFiles = document.filter(
-      (item) => item.filename !== selectedFile.filename
-    );
-    saveDataToLocalStorage(localKey.UPLOADS, filterFiles);
-    fetchUploadFiles();
+    if (selectedFile && documentList) {
+      const document = [...documentList];
+      let filterFiles = document.filter(
+        (item) => item.filename !== selectedFile.filename
+      );
+      saveDataToLocalStorage(localKey.UPLOADS, filterFiles);
+      fetchUploadFiles();
+    }
   };
 
   // Function to edit files
   const callToEditFile = () => {
-    let documents = [...documentList];
-    let index = documents.findIndex(
-      (item) => item.filename === userUploadFile.filename
-    );
-    documents[index] = userUploadFile;
-    saveDataToLocalStorage(localKey.UPLOADS, documents);
-    fetchUploadFiles();
+    if (documentList) {
+      let documents = [...documentList];
+      let index = documents.findIndex(
+        (item) => item.filename === userUploadFile.filename
+      );
+      documents[index] = userUploadFile;
+      saveDataToLocalStorage(localKey.UPLOADS, documents);
+      fetchUploadFiles();
+    }
   };
 
   return (
     <div className="w-100 d-flex flex-column align-self-center">
       <div className="w-100 d-flex flex-column align-items-center mt-3">
-        <div class="card w-75">
-          <div class="card-body w-100">
+        <div className="card w-75">
+          <div className="card-body w-100">
             <div className="w-100 d-flex flex-column align-self-center">
               <h3>My Uploads</h3>
-              {documentList.length > 0 ? (
-                <table class="w-100 table table-striped">
+              {documentList && documentList.length > 0 ? (
+                <table className="w-100 table table-striped">
                   <thead>
                     <tr>
                       <th scope="col" className="col-3">
@@ -130,7 +141,7 @@ function DocumentList() {
                               className="btn btn-outline-primary btn-sm"
                               onClick={() => {
                                 setOpenEditModal(true);
-                                setuserUploadFile(item);
+                                setUserUploadFile(item);
                               }}
                             >
                               <i className="fa fa-pen icon-space" />
@@ -140,7 +151,7 @@ function DocumentList() {
                             <button
                               className="btn btn-outline-danger btn-sm"
                               onClick={() => {
-                                setselectedFile(item);
+                                setSelectedFile(item);
                                 setOpenDeleteModel(true);
                               }}
                             >
@@ -176,12 +187,12 @@ function DocumentList() {
       </div>
 
       <div className="w-100 d-flex flex-column align-items-center mt-3">
-        <div class="card w-75">
-          <div class="card-body">
+        <div className="card w-75">
+          <div className="card-body">
             <div className="w-100 d-flex flex-column align-self-center">
               <h3>Shared Uploads</h3>
-              {sharedDocumentList.length > 0 ? (
-                <table class="w-100 table table-striped">
+              {sharedDocumentList && sharedDocumentList.length > 0 ? (
+                <table className="w-100 table table-striped">
                   <thead>
                     <tr>
                       <th scope="col" className="col-3">
@@ -219,7 +230,7 @@ function DocumentList() {
                 type="button"
                 className="btn btn-primary btn-sm"
                 onClick={() => {
-                  setuploadDocumentModal(true);
+                  setUploadDocumentModal(true);
                 }}
               >
                 + Add Uploads
@@ -236,7 +247,11 @@ function DocumentList() {
         isCenter={true}
         saveButtonTitle={"Upload Now"}
         onSave={() => callToUploadUserFile()}
-        closeModal={() => setuploadDocumentModal(false)}
+        closeModal={() => setUploadDocumentModal(false)}
+        closeOnBackdropClick={undefined}
+        customFooter={false}
+        isLoading={undefined}
+        cancelButtonTitle={undefined}
       >
         <form>
           <FloatingLabel
@@ -277,7 +292,7 @@ function DocumentList() {
         title={"Confirm file Deletion!"}
         closeOnBackdropClick={true}
         isCenter={true}
-        onSave={(e) => {
+        onSave={() => {
           // CallToDeleteUserByAdmin();
           callToDeleteFile();
           setOpenDeleteModel(false);
@@ -285,6 +300,7 @@ function DocumentList() {
         isLoading={false}
         saveButtonTitle={"Delete"}
         cancelButtonTitle={"Cancel"}
+        customFooter={false}
       >
         <p className="text-center">Are you sure, you want delete this file?</p>
       </MyModal>
@@ -296,13 +312,14 @@ function DocumentList() {
         title={"Edit"}
         closeOnBackdropClick={true}
         isCenter={true}
-        onSave={(e) => {
+        onSave={() => {
           callToEditFile();
           setOpenEditModal(false);
         }}
         isLoading={false}
         saveButtonTitle={"Edit"}
         cancelButtonTitle={"Cancel"}
+        customFooter={false}
       >
         <form>
           <FloatingLabel

@@ -1,6 +1,6 @@
 import React from "react";
 import "./index.css";
-const ChatMessage = ({ message, isMine, time, senderName, senderImage }) => {
+const ChatMessage = ({ message, isMine, time, senderName }) => {
   return (
     <div
       className={` p-0 d-flex  ${

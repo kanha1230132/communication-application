@@ -1,17 +1,26 @@
 import React, { useEffect, useState } from "react";
-import MyModal from "../../components/Modal/modal";
-import { getDataToLocalStorage, saveDataToLocalStorage } from "../../helper/localStorage/index.ts";
-import { FloatingLabel, Form } from "react-bootstrap";
-import { localKey } from "../../helper/constants/localStorageKey.ts";
+import AllFilesImporter from "../../hooks/customFileHooks/index.tsx";
+import { IUsers } from "../../interface/index.ts";
 
 function UserList() {
-  const [userList, setUserList] = useState([]);
-  const [openDeleteModel, setOpenDeleteModel] = useState(false);
-  const [selectedUser, setselectedUser] = useState();
-  const [OpenEditModal, setOpenEditModal] = useState(false);
-  const [EditData, setEditData] = useState({
+  const {
+    getDataToLocalStorage,
+    saveDataToLocalStorage,
+    localKey,
+    MyModal,
+    FloatingLabel,
+    Form,
+  } = AllFilesImporter();
+  const [userList, setUserList] = useState<IUsers[]>();
+  const [openDeleteModel, setOpenDeleteModel] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<IUsers>();
+  const [OpenEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [EditData, setEditData] = useState<IUsers>({
+    id: 1,
     name: "",
     email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   useEffect(() => {
@@ -20,54 +29,64 @@ function UserList() {
 
   // Function to fetch user data
   const fetchUserList = () => {
-    const data = localStorage.getItem("users");
-    if (data !== null) {
-      const users = JSON.parse(data);
-      console.log("Users ---> ", users);
-      setUserList(users);
-    }
+    const data: IUsers[] = getDataToLocalStorage(localKey.USERS);
+    setUserList(data);
   };
 
   // Function to delete the user data
   const callToDeleteUser = () => {
-    let loggedUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
-    if(loggedUser.email === selectedUser.email){
-      alert("You can't delete this user");
-      return;
+    if (selectedUser) {
+      let loggedUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
+      if (loggedUser.email === selectedUser.email) {
+        alert("You can't delete this user");
+        return;
+      }
+      let users: IUsers[] = [];
+      if (userList) {
+        users = [...userList];
+      }
+      let filterUser = users.filter(
+        (item) => item.email !== selectedUser.email
+      );
+      saveDataToLocalStorage("users", filterUser);
+      fetchUserList();
     }
-    const users = [...userList];
-    let filterUser = users.filter((item) => item.email !== selectedUser.email);
-    saveDataToLocalStorage("users", filterUser);
-    fetchUserList();
   };
 
   // Function to Edit the user data
   const callToEditUser = () => {
-    let loggedUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
-    if(loggedUser.email === selectedUser.email){
-      alert("You can't Edit this user");
-      return;
+    if (selectedUser) {
+      let loggedUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
+      if (loggedUser.email === selectedUser.email) {
+        alert("You can't Edit this user");
+        return;
+      }
+      let users: IUsers[] = [];
+      if (userList) {
+        users = [...userList];
+      }
+      let index: number = users.findIndex(
+        (item) => item.email === selectedUser.email
+      );
+      users[index] = EditData;
+      saveDataToLocalStorage("users", users);
+      fetchUserList();
     }
-    let users = [...userList];
-    let index = users.findIndex((item) => item.email === selectedUser.email);
-    users[index] = EditData;
-    saveDataToLocalStorage("users", users);
-    fetchUserList();
   };
 
   // Function to handle changes in user data
-  const onChangeHandle = (e) => {
+  const onChangeHandle = (e:any) => {
     const { name, value } = e.target;
     setEditData({ ...EditData, [name]: value });
   };
 
   return (
     <div className="w-100 d-flex flex-column align-items-center mt-3">
-      <div class="card w-75">
-        <div class="card-body">
+      <div className="card w-75">
+        <div className="card-body">
           <div className="w-100 d-flex flex-column align-self-center">
             <h3>Users</h3>
-            <table class="w-100 table table-striped">
+            <table className="w-100 table table-striped">
               <thead>
                 <tr>
                   <th scope="col" className="col-3">
@@ -80,7 +99,7 @@ function UserList() {
                 </tr>
               </thead>
               <tbody>
-                {userList.length > 0
+                {userList && userList.length > 0
                   ? userList.map((user) => {
                       return (
                         <tr>
@@ -91,7 +110,7 @@ function UserList() {
                               className="btn btn-outline-primary btn-sm"
                               onClick={() => {
                                 setOpenEditModal(true);
-                                setselectedUser(user);
+                                setSelectedUser(user);
                                 setEditData(user);
                               }}
                             >
@@ -103,7 +122,7 @@ function UserList() {
                               type="button"
                               className="btn btn-outline-danger btn-sm"
                               onClick={() => {
-                                setselectedUser(user);
+                                setSelectedUser(user);
                                 setOpenDeleteModel(true);
                               }}
                             >
@@ -128,14 +147,14 @@ function UserList() {
         title={"Confirm For Deletion!"}
         closeOnBackdropClick={true}
         isCenter={true}
-        onSave={(e) => {
-          // CallToDeleteUserByAdmin();
+        onSave={() => {
           callToDeleteUser();
           setOpenDeleteModel(false);
         }}
         isLoading={false}
         saveButtonTitle={"Delete"}
         cancelButtonTitle={"Cancel"}
+        customFooter={false}
       >
         <p className="text-center">Are you sure, you want delete this user?</p>
       </MyModal>
@@ -147,13 +166,14 @@ function UserList() {
         title={"Edit"}
         closeOnBackdropClick={true}
         isCenter={true}
-        onSave={(e) => {
+        onSave={() => {
           callToEditUser();
           setOpenEditModal(false);
         }}
         isLoading={false}
         saveButtonTitle={"Edit"}
         cancelButtonTitle={"Cancel"}
+        customFooter={false}
       >
         <form>
           <FloatingLabel

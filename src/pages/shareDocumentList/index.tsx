@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
-import {
-  getDataToLocalStorage,
-  saveDataToLocalStorage,
-} from "../../helper/localStorage/index.ts";
-import { localKey } from "../../helper/constants/localStorageKey.ts";
 import MyModal from "../../components/Modal/modal/index.jsx";
+import AllFilesImporter from "../../hooks/customFileHooks/index.tsx";
+import { IShareDocuments, IUploads, IUsers } from "../../interface/index.ts";
 
 function SharedDocument() {
-  const [fileDetails, setfileDetails] = useState();
-  const [sharedUserList, setsharedUserList] = useState([]);
-  const [userDetails, setuserDetails] = useState([]);
-  const [loggeduser, setloggeduser] = useState();
-  const [selectedValue, setSelectedValue] = useState("");
-  const [openDeleteModel, setOpenDeleteModel] = useState(false);
-  const [selectedFile, setselectedFile] = useState();
-  let location = useLocation();
+  const {
+    saveDataToLocalStorage,
+    getDataToLocalStorage,
+    localKey,
+    Form,
+    useLocation,
+  } = AllFilesImporter();
+  const [fileDetails, setFileDetails] = useState<IUploads>();
+  const [sharedUserList, setSharedUserList] = useState<IShareDocuments[]>();
+  const [userDetails, setUserDetails] = useState<IUsers[]>();
+  const [loggeduser, setLoggedUser] = useState<IUsers>();
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [openDeleteModel, setOpenDeleteModel] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<IShareDocuments>();
+  const location = useLocation();
 
   useEffect(() => {
     getFileFromLocation();
@@ -25,74 +27,79 @@ function SharedDocument() {
     getSharedFileUser();
   }, []);
 
+  // Function to get file from documents list component
   const getFileFromLocation = () => {
-    setfileDetails(location.state.file);
+    setFileDetails(location.state.file);
   };
 
   // Function to get SharedFile user
   const getSharedFileUser = () => {
-    const sharedUser = getDataToLocalStorage(localKey.SHARED_DOCUMENT);
-    setsharedUserList(sharedUser);
+    const sharedUser:IShareDocuments[] = getDataToLocalStorage(localKey.SHARED_DOCUMENT);
+    setSharedUserList(sharedUser);
   };
 
   // Function to get All Users
   const getUserDetails = () => {
-    const users = getDataToLocalStorage(localKey.USERS);
-    setuserDetails(users);
+    const users:IUsers[] = getDataToLocalStorage(localKey.USERS);
+    setUserDetails(users);
   };
 
   // Function to get logged in User
   const getLoggedUser = () => {
-    const loginUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
-    setloggeduser(loginUser);
+    const loginUser:IUsers = getDataToLocalStorage(localKey.LOGGED_IN_USER);
+    setLoggedUser(loginUser);
   };
 
   // Function to get select user for sharing file
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-    console.log("event.target.value----------->", event.target.value);
+  const handleSelectChange = (e:any) => {
+    setSelectedValue(e.target.value);
   };
 
   // Function to share file
   const callToShareFile = () => {
-    const loginUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
-    let prevShareData = getDataToLocalStorage(localKey.SHARED_DOCUMENT);
-    let alreadyShared = prevShareData.filter(
-      (item) =>
-        item.filename === fileDetails.filename &&
-        item.reciveEmail === selectedValue &&
-        item.senderEmail === loginUser.email
-    );
-    if (alreadyShared.length > 0) {
-      alert("This file already shared!");
-      return;
+    const loginUser:IUsers = getDataToLocalStorage(localKey.LOGGED_IN_USER);
+    let prevShareData:IShareDocuments[] = getDataToLocalStorage(localKey.SHARED_DOCUMENT);
+    if(fileDetails){
+      let alreadyShared = prevShareData.filter(
+        (item) =>
+          item.filename === fileDetails.filename &&
+          item.reciveEmail === selectedValue &&
+          item.senderEmail === loginUser.email
+      );
+      if (alreadyShared.length > 0) {
+        alert("This file already shared!");
+        return;
+      }
+      setSelectedValue("");
+      let shareData = {
+        senderEmail: loginUser.email,
+        label: fileDetails.label,
+        filename: fileDetails.filename,
+        reciveEmail: selectedValue,
+      };
+      saveDataToLocalStorage(localKey.SHARED_DOCUMENT, [
+        ...prevShareData,
+        shareData,
+      ]);
+      getSharedFileUser();
     }
-    setSelectedValue("");
-    let shareData = {
-      senderEmail: loginUser.email,
-      label: fileDetails.label,
-      filename: fileDetails.filename,
-      reciveEmail: selectedValue,
-    };
-    saveDataToLocalStorage(localKey.SHARED_DOCUMENT, [
-      ...prevShareData,
-      shareData,
-    ]);
-    getSharedFileUser();
   };
 
   // Function remove shared file
   const callToRemoveShareFile = () => {
-    let file = { ...selectedFile };
-    const shareList = [...sharedUserList];
-    const filterList = shareList.filter(
-      (item) =>
-        file.filename !== item.filename ||
-        file.reciveEmail !== item.reciveEmail ||
-        file.senderEmail !== item.senderEmail
-    );
-    saveDataToLocalStorage(localKey.SHARED_DOCUMENT, filterList);
-    getSharedFileUser();
+    if(selectedFile && sharedUserList){
+      let file = { ...selectedFile };
+      const shareList = [...sharedUserList];
+      const filterList = shareList.filter(
+        (item) =>
+          file.filename !== item.filename ||
+          file.reciveEmail !== item.reciveEmail ||
+          file.senderEmail !== item.senderEmail
+      );
+      saveDataToLocalStorage(localKey.SHARED_DOCUMENT, filterList);
+      getSharedFileUser();
+    }
+    
   };
   return (
     <div className="w-100 d-flex flex-column">
@@ -103,11 +110,11 @@ function SharedDocument() {
       </div>
 
       <div className="w-100 d-flex flex-column align-items-center mt-3">
-        <div class="card w-75">
-          <div class="card-body w-100">
+        <div className="card w-75">
+          <div className="card-body w-100">
             <div className="w-100 d-flex flex-column align-self-center">
-              {sharedUserList.length > 0 ? (
-                <table class="w-100 table table-striped">
+              {fileDetails && sharedUserList && sharedUserList.length > 0 ? (
+                <table className="w-100 table table-striped">
                   <thead>
                     <tr>
                       <th scope="col" className="col-4">
@@ -132,7 +139,7 @@ function SharedDocument() {
                             <button
                               className="btn btn-outline-danger btn-sm"
                               onClick={() => {
-                                setselectedFile(item);
+                                setSelectedFile(item);
                                 setOpenDeleteModel(true);
                               }}
                             >
@@ -156,8 +163,8 @@ function SharedDocument() {
       </div>
 
       <div className="w-100 d-flex flex-column align-items-center mt-3">
-        <div class="card w-75">
-          <div class="card-body w-100">
+        <div className="card w-75">
+          <div className="card-body w-100">
             <h6 className="bg-light text-dark p-3 rounded">Add Sharing</h6>
             <div className="w-100 d-flex flex-row col-12 align-items-center mt-4">
               <div className="col-2">
@@ -170,7 +177,7 @@ function SharedDocument() {
                   onChange={handleSelectChange}
                 >
                   <option value="">Select an option</option>
-                  {userDetails.map((item) => {
+                  {loggeduser && userDetails && userDetails.map((item) => {
                     if (item.email === loggeduser.email) {
                       return null;
                     }
@@ -199,13 +206,14 @@ function SharedDocument() {
         title={"Confirm file Remove Access!"}
         closeOnBackdropClick={true}
         isCenter={true}
-        onSave={(e) => {
+        onSave={() => {
           callToRemoveShareFile();
           setOpenDeleteModel(false);
         }}
         isLoading={false}
         saveButtonTitle={"Delete"}
         cancelButtonTitle={"Cancel"}
+        customFooter={false}
       >
         <p className="text-center">Are you sure, you want delete this file?</p>
       </MyModal>

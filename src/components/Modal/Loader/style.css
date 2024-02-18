@@ -1,0 +1,14 @@
+.custom-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.116); /* Black background with 0.5 opacity */
+  z-index: 1040; /* Ensure it's above other content */
+ }
+
+ .custom-modal .modal-content {
+  border: none;
+  background-color: #0000; /* Replace #yourColor with the color you want */
+ }
