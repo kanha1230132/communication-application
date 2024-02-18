@@ -13,6 +13,7 @@ function Register() {
     FloatingLabel,
     Form,
     Loader,
+    Link
   } = AllFilesImporter();
   const [user, setUser] = useState<IUsers>({
     id: 1,
@@ -74,7 +75,7 @@ function Register() {
         <FloatingLabel
           controlId="floatingPassword"
           label="Full Name"
-          className="m-2"
+          className="mt-2"
         >
           <Form.Control
             type="text"
@@ -88,7 +89,7 @@ function Register() {
         <FloatingLabel
           controlId="floatingPassword"
           label="Email"
-          className="m-2"
+          className="mt-2"
         >
           <Form.Control
             type="email"
@@ -102,7 +103,7 @@ function Register() {
         <FloatingLabel
           controlId="floatingPassword"
           label="Password"
-          className="m-2"
+          className="mt-2"
         >
           <Form.Control
             type="password"
@@ -116,7 +117,7 @@ function Register() {
         <FloatingLabel
           controlId="floatingPassword"
           label="Confirm Password"
-          className="m-2"
+          className="mt-2"
         >
           <Form.Control
             type="password"
@@ -127,7 +128,8 @@ function Register() {
             required
           />
         </FloatingLabel>
-        <Button type="submit" variant="secondary" className="m-2">
+        <p className="m-2">Already Have an Account ? <Link to={PathName.loginPath}>Sign In</Link> </p>
+        <Button type="submit" variant="secondary" className="w-100 mt-2">
           Register
         </Button>
       </form>
@@ -135,5 +137,6 @@ function Register() {
     </div>
   );
 }
+
 
 export default Register;

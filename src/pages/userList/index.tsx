@@ -10,6 +10,9 @@ function UserList() {
     MyModal,
     FloatingLabel,
     Form,
+    Loader,
+    successToast,
+    dangerToast,
   } = AllFilesImporter();
   const [userList, setUserList] = useState<IUsers[]>();
   const [openDeleteModel, setOpenDeleteModel] = useState<boolean>(false);
@@ -22,6 +25,7 @@ function UserList() {
     password: "",
     confirmPassword: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchUserList();
@@ -31,6 +35,9 @@ function UserList() {
   const fetchUserList = () => {
     const data: IUsers[] = getDataToLocalStorage(localKey.USERS);
     setUserList(data);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
 
   // Function to delete the user data
@@ -38,9 +45,10 @@ function UserList() {
     if (selectedUser) {
       let loggedUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
       if (loggedUser.email === selectedUser.email) {
-        alert("You can't delete this user");
+        dangerToast("You can't delete this user");
         return;
       }
+      setIsLoading(true);
       let users: IUsers[] = [];
       if (userList) {
         users = [...userList];
@@ -49,6 +57,7 @@ function UserList() {
         (item) => item.email !== selectedUser.email
       );
       saveDataToLocalStorage("users", filterUser);
+      successToast("Successfully User Deleted.");
       fetchUserList();
     }
   };
@@ -58,9 +67,10 @@ function UserList() {
     if (selectedUser) {
       let loggedUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
       if (loggedUser.email === selectedUser.email) {
-        alert("You can't Edit this user");
+        dangerToast("You can't Edit this user");
         return;
       }
+      setIsLoading(true);
       let users: IUsers[] = [];
       if (userList) {
         users = [...userList];
@@ -70,12 +80,14 @@ function UserList() {
       );
       users[index] = EditData;
       saveDataToLocalStorage("users", users);
+      successToast("Successfully User Updated.");
+
       fetchUserList();
     }
   };
 
   // Function to handle changes in user data
-  const onChangeHandle = (e:any) => {
+  const onChangeHandle = (e: any) => {
     const { name, value } = e.target;
     setEditData({ ...EditData, [name]: value });
   };
@@ -107,7 +119,7 @@ function UserList() {
                           <td>{user.email}</td>
                           <td>
                             <button
-                              className="btn btn-outline-primary btn-sm"
+                              className="btn btn-outline-secondary btn-sm"
                               onClick={() => {
                                 setOpenEditModal(true);
                                 setSelectedUser(user);
@@ -206,6 +218,8 @@ function UserList() {
           </FloatingLabel>
         </form>
       </MyModal>
+
+      <Loader isLoading={isLoading} />
     </div>
   );
 }

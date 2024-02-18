@@ -27,7 +27,7 @@ function Navbar() {
       <nav className="nav nav-pills nav-justified bg-light">
         <Link
           className={`nav-link ${
-            compare(PathName.chatListPath) ? "active" : ""
+            compare(PathName.chatListPath) ? "active bg-secondary" : "text-dark"
           } `}
           aria-current="page"
           to={PathName.chatListPath}
@@ -36,7 +36,7 @@ function Navbar() {
         </Link>
         <Link
           className={`nav-link ${
-            compare(PathName.userListPath) ? "active" : ""
+            compare(PathName.userListPath) ? "active bg-secondary" : "text-dark"
           }`}
           to={PathName.userListPath}
         >
@@ -44,14 +44,14 @@ function Navbar() {
         </Link>
         <Link
           className={`nav-link ${
-            compare(PathName.documentListPath) ? "active" : ""
+            compare(PathName.documentListPath) ? "active bg-secondary" : "text-dark"
           }`}
           to={PathName.documentListPath}
         >
           {TextMessage.MANAGEMENT_DOCUMENTS}
         </Link>
         <Link
-          className={`nav-link ${compare(PathName.loginPath) ? "active" : ""}`}
+          className={`nav-link ${compare(PathName.loginPath) ? "active" : "text-dark"}`}
           aria-disabled="true"
           onClick={() => setOpenLogoutModel(true)}
         >

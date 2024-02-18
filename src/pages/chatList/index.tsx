@@ -33,8 +33,7 @@ function ChatList() {
   };
 
   // Function to send message
-  const sendMessage = (e: any) => {
-    e.preventDefault();
+  const sendMessage = () => {
     setMessage("");
     const loginUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
     setLoggedUser(loginUser);
@@ -81,11 +80,11 @@ function ChatList() {
           </div>
 
           <div className="card-footer col-12 d-flex justify-space-between justify-content-between">
-            <div className="col-2 bg-primary rounded text-center">
+            <div className="col-2 bg-secondary rounded text-center">
               <p className="text-white">{loggedUser && loggedUser.name}</p>
             </div>
             <div className="col-8">
-              <form onSubmit={sendMessage}>
+              <form>
                 <input
                   type="text"
                   className="form-control"
@@ -105,6 +104,7 @@ function ChatList() {
               <i className="fas fa-sync-alt fa-rotate-90"></i>
             </button>
             <button
+            onClick={() => sendMessage()}
               type="submit"
               className="col-1 btn btn-outline bg-secondary text-white"
               style={{ width: 50 }}

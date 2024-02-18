@@ -14,9 +14,12 @@ import Navbar from "./navigation/navbar/index.tsx";
 import { PathName } from "./helper/constants/pathNames.ts";
 import './theme/style.css'
 import SharedDocument from "./pages/shareDocumentList/index.tsx";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
     <BrowserRouter>
+    <ToastContainer />
       <Routes>
         <Route index path={PathName.homePath} element={<Welcome />} />
         <Route path={PathName.loginPath} element={<Login />} />

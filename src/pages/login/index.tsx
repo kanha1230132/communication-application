@@ -14,7 +14,10 @@ const Login = () => {
     Form,
     Button,
     Link,
-    Loader
+    Loader,
+    warningToast,
+    dangerToast,
+    successToast
   } = AllFilesImporter();
   const navigate = useNavigate();
   const [user, setUser] = useState({
@@ -41,19 +44,20 @@ const Login = () => {
           saveDataToLocalStorage(localKey.LOGGED_IN_USER, loggedUser[0]);
           navigateToHome();
         } else {
-          alert("Password not matched!");
+          warningToast("Password not matched!")
         }
       } else {
-        alert("Users Not Exists !");
+        dangerToast("Users Not Exists !");
       }
     } else {
-      alert("Users Not Exists !");
+      dangerToast("Users Not Exists !");
     }
   };
 
   // Function to navigate home page
   const navigateToHome = () =>{
     setTimeout(() => {
+      successToast("Login Successfully!");
       setIsLoading(false);
       navigate(PathName.chatListPath);
     }, 1000);

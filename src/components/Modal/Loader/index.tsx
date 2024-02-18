@@ -11,7 +11,7 @@ function Loader({ isLoading }) {
       dialogClassName="modal-dialog-centered"
     >
       {
-        <div className="spinner-border text-primary" role="status">
+        <div className="spinner-border text-secondary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       }

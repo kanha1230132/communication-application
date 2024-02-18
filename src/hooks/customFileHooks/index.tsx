@@ -4,17 +4,22 @@ import { PathName } from "../../helper/constants/pathNames.ts";
 import {
   saveDataToLocalStorage,
   getDataToLocalStorage,
-  removeItemFromLocalStorage
+  removeItemFromLocalStorage,
 } from "../../helper/localStorage/index.ts";
-import { FloatingLabel, Form, Button} from "react-bootstrap";
-import { useNavigate ,Link, Outlet} from "react-router-dom";
-import Loader from '../../components/Modal/Loader/index.tsx'
+import { FloatingLabel, Form, Button } from "react-bootstrap";
+import { useNavigate, Link, Outlet } from "react-router-dom";
+import Loader from "../../components/Modal/Loader/index.tsx";
 import { useLocation } from "react-router-dom";
 import { imageUrl } from "../../assets/index.ts";
 import { TextMessage } from "../../helper/constants/textMessage.ts";
+import {
+  infoToast,
+  dangerToast,
+  successToast,
+  warningToast,
+} from "../../components/customToast/index.ts";
 
 const AllFilesImporter = () => {
-  
   return {
     saveDataToLocalStorage,
     getDataToLocalStorage,
@@ -31,7 +36,11 @@ const AllFilesImporter = () => {
     useLocation,
     imageUrl,
     Outlet,
-    TextMessage
+    TextMessage,
+    infoToast,
+    dangerToast,
+    successToast,
+    warningToast,
   };
 };
 

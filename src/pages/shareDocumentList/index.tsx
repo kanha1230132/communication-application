@@ -10,6 +10,9 @@ function SharedDocument() {
     localKey,
     Form,
     useLocation,
+    Loader,
+    successToast,
+    warningToast
   } = AllFilesImporter();
   const [fileDetails, setFileDetails] = useState<IUploads>();
   const [sharedUserList, setSharedUserList] = useState<IShareDocuments[]>();
@@ -19,7 +22,7 @@ function SharedDocument() {
   const [openDeleteModel, setOpenDeleteModel] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<IShareDocuments>();
   const location = useLocation();
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
     getFileFromLocation();
     getUserDetails();
@@ -36,6 +39,9 @@ function SharedDocument() {
   const getSharedFileUser = () => {
     const sharedUser:IShareDocuments[] = getDataToLocalStorage(localKey.SHARED_DOCUMENT);
     setSharedUserList(sharedUser);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
 
   // Function to get All Users
@@ -57,6 +63,10 @@ function SharedDocument() {
 
   // Function to share file
   const callToShareFile = () => {
+    if(selectedValue=== ""){
+      warningToast("Please select user to share file");
+      return;
+    }
     const loginUser:IUsers = getDataToLocalStorage(localKey.LOGGED_IN_USER);
     let prevShareData:IShareDocuments[] = getDataToLocalStorage(localKey.SHARED_DOCUMENT);
     if(fileDetails){
@@ -67,9 +77,10 @@ function SharedDocument() {
           item.senderEmail === loginUser.email
       );
       if (alreadyShared.length > 0) {
-        alert("This file already shared!");
+        warningToast("This file already shared!");
         return;
       }
+      setIsLoading(true);
       setSelectedValue("");
       let shareData = {
         senderEmail: loginUser.email,
@@ -77,6 +88,7 @@ function SharedDocument() {
         filename: fileDetails.filename,
         reciveEmail: selectedValue,
       };
+      successToast("File shared.");
       saveDataToLocalStorage(localKey.SHARED_DOCUMENT, [
         ...prevShareData,
         shareData,
@@ -88,6 +100,7 @@ function SharedDocument() {
   // Function remove shared file
   const callToRemoveShareFile = () => {
     if(selectedFile && sharedUserList){
+      setIsLoading(true);
       let file = { ...selectedFile };
       const shareList = [...sharedUserList];
       const filterList = shareList.filter(
@@ -97,6 +110,7 @@ function SharedDocument() {
           file.senderEmail !== item.senderEmail
       );
       saveDataToLocalStorage(localKey.SHARED_DOCUMENT, filterList);
+      successToast("File removed.");
       getSharedFileUser();
     }
     
@@ -188,7 +202,7 @@ function SharedDocument() {
 
               <button
                 type="button"
-                className="btn btn-primary btn-sm col-2"
+                className="btn btn-secondary btn-sm col-2"
                 style={{ marginLeft: 10, height: 40 }}
                 onClick={() => callToShareFile()}
               >
@@ -217,6 +231,8 @@ function SharedDocument() {
       >
         <p className="text-center">Are you sure, you want delete this file?</p>
       </MyModal>
+
+      <Loader isLoading={isLoading} />
     </div>
   );
 }

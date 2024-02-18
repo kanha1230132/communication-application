@@ -12,6 +12,8 @@ function DocumentList() {
     FloatingLabel,
     Form,
     MyModal,
+    Loader,
+    successToast,
   } = AllFilesImporter();
   const [documentList, setDocumentList] = useState<IUploads[]>();
   const [sharedDocumentList, setSharedDocumentList] =
@@ -28,6 +30,7 @@ function DocumentList() {
   const [selectedFile, setSelectedFile] = useState<IUploads>();
   const [OpenEditModal, setOpenEditModal] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     fetchUploadFiles();
@@ -42,6 +45,9 @@ function DocumentList() {
       (item) => loginUser.email === item.uploadBy
     );
     setDocumentList(filterUploadFiles);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
 
   // Function to fetch Shared Upload files
@@ -54,6 +60,7 @@ function DocumentList() {
       (item) => item.reciveEmail === loginUser.email
     );
     setSharedDocumentList(filterDoc);
+    
   };
 
   // Function to handle changes of upload files
@@ -65,6 +72,7 @@ function DocumentList() {
   // Function to Upload files
   const callToUploadUserFile = () => {
     setUploadDocumentModal(false);
+    setIsLoading(true);
     const loginUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
     let fileUploads = { ...userUploadFile };
     fileUploads.uploadBy = loginUser.email;
@@ -74,6 +82,7 @@ function DocumentList() {
     } else {
       saveDataToLocalStorage(localKey.UPLOADS, [...localuploads, fileUploads]);
     }
+    successToast("Successfully file Uploaded.")
     fetchUploadFiles();
     setUserUploadFile({
       id: 1,
@@ -138,7 +147,7 @@ function DocumentList() {
                           <td>{item.filename}</td>
                           <td>
                             <button
-                              className="btn btn-outline-primary btn-sm"
+                              className="btn btn-outline-secondary btn-sm"
                               onClick={() => {
                                 setOpenEditModal(true);
                                 setUserUploadFile(item);
@@ -228,7 +237,7 @@ function DocumentList() {
             <div className="w-25 d-flex flex-column align-self-center">
               <button
                 type="button"
-                className="btn btn-primary btn-sm"
+                className="btn btn-secondary btn-sm"
                 onClick={() => {
                   setUploadDocumentModal(true);
                 }}
@@ -338,6 +347,9 @@ function DocumentList() {
           </FloatingLabel>
         </form>
       </MyModal>
+
+      <Loader isLoading={isLoading} />
+
     </div>
   );
 }
