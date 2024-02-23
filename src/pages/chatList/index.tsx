@@ -80,7 +80,7 @@ function ChatList() {
           </div>
 
           <div className="card-footer col-12 d-flex justify-space-between justify-content-between">
-            <div className="col-2 bg-secondary rounded text-center">
+            <div className="col-2 bg-secondary rounded text-center d-flex align-items-center justify-content-center">
               <p className="text-white">{loggedUser && loggedUser.name}</p>
             </div>
             <div className="col-8">

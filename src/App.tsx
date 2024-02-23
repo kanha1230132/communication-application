@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Login from "./pages/login/index.tsx";
 import ChatList from "./pages/chatList/index.tsx";
 import DocumentList from "./pages/documentList/index.tsx";
@@ -12,14 +12,48 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NotFound from "./pages/notFound/index.tsx";
 import Navbar from "./navigation/navbar/index.tsx";
 import { PathName } from "./helper/constants/pathNames.ts";
-import './theme/style.css'
+import "./theme/style.css";
 import SharedDocument from "./pages/shareDocumentList/index.tsx";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
+  // const UnAutenticateRoutes = () => {
+  //   return (
+  //     <Routes>
+  //       <Route index path={PathName.homePath} element={<Welcome />} />
+  //       <Route path={PathName.loginPath} element={<Login />} />
+  //       <Route path={PathName.registerPath} element={<Register />} />
+  //     </Routes>
+  //   );
+  // };
+
+  // const AutenticateRoutes = () => {
+  //   return (
+  //     <Routes>
+
+  //       <Route
+  //         path={PathName.registerSuccessPath}
+  //         element={<RegisterSuccessFully />}
+  //       />
+  //       {/* <Route path={PathName.loginSuccessPath} element={<LoginSuccessFully />} /> */}
+  //       <Route path={PathName.notFoundPath} element={<NotFound />} />
+  //       <Route element={<Navbar />}>
+  //         <Route path={PathName.chatListPath} element={<ChatList />} />
+  //         <Route path={PathName.documentListPath} element={<DocumentList />} />
+  //         <Route path={PathName.userListPath} element={<UserList />} />
+  //         <Route path={PathName.logoutPath} element={<Logout />} />
+  //         <Route
+  //           path={PathName.sharedDocumentPath}
+  //           element={<SharedDocument />}
+  //         />
+  //       </Route>
+  //     </Routes>
+  //   );
+  // };
   return (
     <BrowserRouter>
-    <ToastContainer />
+      <ToastContainer />
       <Routes>
         <Route index path={PathName.homePath} element={<Welcome />} />
         <Route path={PathName.loginPath} element={<Login />} />
@@ -35,7 +69,10 @@ function App() {
           <Route path={PathName.documentListPath} element={<DocumentList />} />
           <Route path={PathName.userListPath} element={<UserList />} />
           <Route path={PathName.logoutPath} element={<Logout />} />
-          <Route path={PathName.sharedDocumentPath} element={<SharedDocument />} />
+          <Route
+            path={PathName.sharedDocumentPath}
+            element={<SharedDocument />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

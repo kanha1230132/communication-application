@@ -16,7 +16,7 @@ const ChatMessage = ({ message, isMine, time, senderName }) => {
           {!isMine && senderName && <strong>{senderName}</strong>}
         </p>
         <p style={{ fontSize: 11 }}>{message}</p>
-        <div>
+        <div className="d-flex justify-content-end"> 
           <p style={{ fontSize: 10 }}>{time}</p>
         </div>
       </div>
