@@ -11,7 +11,7 @@ import { useNavigate, Link, Outlet } from "react-router-dom";
 import Loader from "../../components/Modal/Loader/index.tsx";
 import { useLocation } from "react-router-dom";
 import { imageUrl } from "../../assets/index.ts";
-import { TextMessage } from "../../helper/constants/textMessage.ts";
+import { textMessage } from "../../helper/constants/textMessage.ts";
 import {
   infoToast,
   dangerToast,
@@ -36,7 +36,7 @@ const AllFilesImporter = () => {
     useLocation,
     imageUrl,
     Outlet,
-    TextMessage,
+    textMessage,
     infoToast,
     dangerToast,
     successToast,

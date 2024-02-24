@@ -34,7 +34,9 @@ function ChatList() {
 
   // Function to send message
   const sendMessage = () => {
-    setMessage("");
+    if(message === ""){
+      return;
+    }
     const loginUser = getDataToLocalStorage(localKey.LOGGED_IN_USER);
     setLoggedUser(loginUser);
     let messageObj = {
@@ -46,6 +48,7 @@ function ChatList() {
     let prevChats = getDataToLocalStorage(localKey.CHATS);
     prevChats.push(messageObj);
     saveDataToLocalStorage(localKey.CHATS, prevChats);
+    setMessage("");
     fetchChats();
   };
   return (
@@ -58,7 +61,6 @@ function ChatList() {
             {messagesList && messagesList.length > 0 ? (
               <>
                 {messagesList.map((item) => {
-                  console.log("item--->", item);
                   return (
                     <ChatMessage
                       message={item.message}

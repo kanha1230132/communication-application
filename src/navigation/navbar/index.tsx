@@ -9,14 +9,14 @@ function Navbar() {
     PathName,
     useNavigate,
     Link,
-    TextMessage,
+    textMessage,
     Outlet,
   } = AllFilesImporter();
   const navigate = useNavigate();
   const [isOpneLogoutModel, setOpenLogoutModel] = useState(false);
   const onLogout = () => {
     removeItemFromLocalStorage(localKey.LOGGED_IN_USER);
-    navigate("/");
+    navigate(PathName.homePath);
   };
   const currentPath = window.location.pathname;
   const compare = (path) => {
@@ -32,7 +32,7 @@ function Navbar() {
           aria-current="page"
           to={PathName.chatListPath}
         >
-          {TextMessage.GROUP_CHAT}
+          {textMessage.GROUP_CHAT}
         </Link>
         <Link
           className={`nav-link ${
@@ -40,7 +40,7 @@ function Navbar() {
           }`}
           to={PathName.userListPath}
         >
-          {TextMessage.MANAGE_USER}
+          {textMessage.MANAGE_USER}
         </Link>
         <Link
           className={`nav-link ${
@@ -48,14 +48,14 @@ function Navbar() {
           }`}
           to={PathName.documentListPath}
         >
-          {TextMessage.MANAGEMENT_DOCUMENTS}
+          {textMessage.MANAGEMENT_DOCUMENTS}
         </Link>
         <Link
           className={`nav-link ${compare(PathName.loginPath) ? "active" : "text-dark"}`}
           aria-disabled="true"
           onClick={() => setOpenLogoutModel(true)}
         >
-          {TextMessage.LOGOUT}
+          {textMessage.LOGOUT}
         </Link>
         <MyModal
           openModal={isOpneLogoutModel}

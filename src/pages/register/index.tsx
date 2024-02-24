@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./index.css";
 import { IUsers } from "../../interface/index.ts";
 import AllFilesImporter from "../../hooks/customFileHooks/index.tsx";
+import { textMessage } from "../../helper/constants/textMessage.ts";
 
 function Register() {
   const {
@@ -69,8 +70,7 @@ function Register() {
 
   return (
     <div className="login-container">
-      <h2>Register </h2>
-
+      <h2>{textMessage.REGISTER} </h2>
       <form onSubmit={onHandleRegister}>
         <FloatingLabel
           controlId="floatingPassword"
@@ -128,9 +128,9 @@ function Register() {
             required
           />
         </FloatingLabel>
-        <p className="m-2">Already Have an Account ? <Link to={PathName.loginPath}>Sign In</Link> </p>
+        <p className="m-2">{textMessage.ALREADY_HAVE_ACCOUNT}<Link to={PathName.loginPath}>{textMessage.SIGN_IN}</Link> </p>
         <Button type="submit" variant="secondary" className="w-100 mt-2">
-          Register
+          {textMessage.REGISTER}
         </Button>
       </form>
       <Loader isLoading={isLoading} />

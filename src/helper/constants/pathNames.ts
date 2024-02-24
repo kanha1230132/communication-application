@@ -7,7 +7,7 @@ export const PathName={
   loginSuccessPath: "/loginSuccessPath",
   registerPath: "/registerPath",
   registerSuccessPath: "/registerSuccessPath",
-  notFoundPath: "/notFoundPath",
+  notFoundPath: "/*",
   chatListPath: "/chatListPath",
   documentListPath: "/documentListPath",
   userListPath: "/userListPath",
